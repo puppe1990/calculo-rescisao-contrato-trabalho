@@ -289,7 +289,6 @@ function registerEvents() {
 
     await loadHistoryRecord(target.dataset.historyId);
   });
-
 }
 
 async function bootstrap() {
