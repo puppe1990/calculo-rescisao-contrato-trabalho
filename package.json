@@ -1,0 +1,38 @@
+{
+  "name": "calculo-rescisao-contrato-trabalho",
+  "version": "1.0.0",
+  "description": "Sistema desktop de calculo de rescisao com NeutralinoJS, Tailwind, JS e SQLite.",
+  "scripts": {
+    "prepare": "node ./scripts/install-pre-commit.mjs",
+    "prepare:assets": "node ./scripts/sync-vendor.mjs",
+    "build:css": "npx @tailwindcss/cli -i ./resources/styles-input.css -o ./resources/styles.css --minify",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint . --max-warnings=0",
+    "check": "npm run format:check && npm run lint && npm run test",
+    "precommit": "npm run check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "dev": "npm run prepare:assets && npm run build:css && ./node_modules/.bin/neu run",
+    "build": "npm run prepare:assets && npm run build:css && ./node_modules/.bin/neu build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "sql.js": "^1.14.1",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@neutralinojs/neu": "^11.7.1",
+    "@tailwindcss/cli": "^4.3.0",
+    "eslint": "^10.3.0",
+    "globals": "^17.6.0",
+    "jsdom": "^29.1.1",
+    "prettier": "^3.8.3",
+    "tailwindcss": "^4.3.0",
+    "vitest": "^4.1.5"
+  }
+}

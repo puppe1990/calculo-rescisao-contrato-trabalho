@@ -1,0 +1,10 @@
+.tmp
+AGENTS.md
+CLAUDE.md
+bin
+dist
+node_modules
+resources/js/neutralino.d.ts
+resources/js/neutralino.js
+resources/styles.css
+resources/vendor

@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculo de Rescisao</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="selection:bg-amber-200">
+    <main
+      class="mx-auto flex min-h-screen max-w-[1600px] flex-col gap-6 px-6 py-6"
+    >
+      <section class="panel overflow-hidden">
+        <div
+          class="grid gap-6 bg-[linear-gradient(135deg,#14213d_0%,#1d3557_100%)] px-8 py-8 text-white lg:grid-cols-[1.25fr_0.75fr]"
+        >
+          <div class="space-y-5">
+            <span class="chip bg-white/15 text-amber-200"
+              >NeutralinoJS + SQLite</span
+            >
+            <div class="space-y-3">
+              <h1 class="max-w-3xl text-4xl font-semibold tracking-tight">
+                Calculo de rescisao com historico local e importacao de
+                planilhas
+              </h1>
+              <p class="max-w-2xl text-sm leading-6 text-slate-200">
+                MVP desktop com regras centrais de rescisao, persistencia SQLite
+                via sql.js e importador de workbook. O sistema salva cada
+                simulacao localmente e permite revisar os resultados sem
+                depender de internet.
+              </p>
+            </div>
+          </div>
+          <div class="grid gap-4 self-end sm:grid-cols-2">
+            <article class="rounded-3xl border border-white/15 bg-white/8 p-5">
+              <p class="text-xs uppercase tracking-[0.18em] text-slate-300">
+                Base 2026
+              </p>
+              <p class="mt-2 text-2xl font-semibold" id="inss-ceiling">
+                R$ 8.475,55
+              </p>
+              <p class="mt-2 text-sm text-slate-300">
+                Teto do INSS usado apenas como referencia.
+              </p>
+            </article>
+            <article class="rounded-3xl border border-white/15 bg-white/8 p-5">
+              <p class="text-xs uppercase tracking-[0.18em] text-slate-300">
+                Historico
+              </p>
+              <p class="mt-2 text-2xl font-semibold" id="history-count">
+                0 simulacoes
+              </p>
+              <p class="mt-2 text-sm text-slate-300">
+                Armazenado em arquivo SQLite no diretorio de dados do app.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(420px,0.85fr)]"
+      >
+        <section class="panel p-6">
+          <div class="mb-6 flex items-start justify-between gap-4">
+            <div>
+              <h2 class="text-2xl font-semibold text-slate-900">
+                Nova simulacao
+              </h2>
+              <p class="mt-1 text-sm text-slate-600">
+                O motor calcula saldo de salario, 13o proporcional, ferias,
+                aviso e FGTS.
+              </p>
+            </div>
+            <div class="flex shrink-0 gap-3">
+              <button class="btn-secondary" id="import-button" type="button">
+                Importar Excel
+              </button>
+              <button class="btn-primary" id="calculate-button" type="button">
+                Calcular e salvar
+              </button>
+            </div>
+          </div>
+
+          <form class="grid gap-5 md:grid-cols-2" id="rescission-form">
+            <div class="md:col-span-2">
+              <label for="employeeName">Nome do colaborador</label>
+              <input
+                id="employeeName"
+                name="employeeName"
+                placeholder="Ex.: Maria de Souza"
+                required
+              />
+            </div>
+            <div>
+              <label for="salary">Salario bruto mensal</label>
+              <input
+                id="salary"
+                name="salary"
+                type="number"
+                min="0"
+                step="0.01"
+                value="3500"
+                required
+              />
+            </div>
+            <div>
+              <label for="fgtsBalance">Saldo FGTS acumulado</label>
+              <input
+                id="fgtsBalance"
+                name="fgtsBalance"
+                type="number"
+                min="0"
+                step="0.01"
+                value="0"
+              />
+            </div>
+            <div>
+              <label for="admissionDate">Data de admissao</label>
+              <input
+                id="admissionDate"
+                name="admissionDate"
+                type="date"
+                required
+              />
+            </div>
+            <div>
+              <label for="terminationDate">Data de desligamento</label>
+              <input
+                id="terminationDate"
+                name="terminationDate"
+                type="date"
+                required
+              />
+            </div>
+            <div>
+              <label for="terminationType">Tipo de rescisao</label>
+              <select id="terminationType" name="terminationType">
+                <option value="SEM_JUSTA_CAUSA">Sem justa causa</option>
+                <option value="PEDIDO_DEMISSAO">Pedido de demissao</option>
+                <option value="TERMINO_CONTRATO">Termino de contrato</option>
+              </select>
+            </div>
+            <div>
+              <label for="noticeMode">Aviso previo</label>
+              <select id="noticeMode" name="noticeMode">
+                <option value="INDENIZADO">Indenizado</option>
+                <option value="TRABALHADO">Trabalhado</option>
+                <option value="NAO_APLICAVEL">Nao aplicavel</option>
+              </select>
+            </div>
+            <div>
+              <label for="vacationDaysDue">Dias de ferias vencidas</label>
+              <input
+                id="vacationDaysDue"
+                name="vacationDaysDue"
+                type="number"
+                min="0"
+                max="30"
+                value="0"
+              />
+            </div>
+            <div>
+              <label for="otherDiscounts">Outros descontos</label>
+              <input
+                id="otherDiscounts"
+                name="otherDiscounts"
+                type="number"
+                min="0"
+                step="0.01"
+                value="0"
+              />
+            </div>
+            <div class="md:col-span-2">
+              <label for="notes">Observacoes</label>
+              <textarea
+                id="notes"
+                name="notes"
+                rows="3"
+                placeholder="Informacoes adicionais da rescisao"
+              ></textarea>
+            </div>
+          </form>
+
+          <div
+            class="mt-6 rounded-3xl border border-amber-200 bg-amber-50/80 p-4 text-sm text-amber-950"
+          >
+            As regras desta primeira versao cobrem o calculo-base da rescisao e
+            usam referencia de teto do INSS de 2026. Impostos detalhados,
+            convencoes coletivas e excecoes juridicas ainda precisam ser
+            refinados com a planilha real e validacao trabalhista.
+          </div>
+        </section>
+
+        <section class="grid gap-6">
+          <section class="panel p-6">
+            <div class="mb-5 flex items-center justify-between">
+              <div>
+                <h2 class="text-2xl font-semibold text-slate-900">
+                  Resumo financeiro
+                </h2>
+                <p class="mt-1 text-sm text-slate-600">
+                  Resultado salvo automaticamente no SQLite local.
+                </p>
+              </div>
+              <span class="chip bg-slate-900 text-white" id="termination-badge"
+                >Aguardando calculo</span
+              >
+            </div>
+            <div class="grid gap-4 sm:grid-cols-2">
+              <article class="metric-card">
+                <p class="text-xs uppercase tracking-[0.18em] text-slate-500">
+                  Total de proventos
+                </p>
+                <p
+                  class="mt-2 text-3xl font-semibold text-slate-950"
+                  id="gross-total"
+                >
+                  R$ 0,00
+                </p>
+              </article>
+              <article class="metric-card">
+                <p class="text-xs uppercase tracking-[0.18em] text-slate-500">
+                  Total de descontos
+                </p>
+                <p
+                  class="mt-2 text-3xl font-semibold text-rose-700"
+                  id="discount-total"
+                >
+                  R$ 0,00
+                </p>
+              </article>
+              <article class="metric-card sm:col-span-2">
+                <p class="text-xs uppercase tracking-[0.18em] text-slate-500">
+                  Liquido estimado
+                </p>
+                <p
+                  class="mt-2 text-4xl font-semibold text-emerald-700"
+                  id="net-total"
+                >
+                  R$ 0,00
+                </p>
+              </article>
+            </div>
+
+            <div
+              class="mt-6 overflow-hidden rounded-3xl border border-slate-200"
+            >
+              <table class="min-w-full divide-y divide-slate-200 text-sm">
+                <thead class="bg-slate-50">
+                  <tr>
+                    <th
+                      class="px-4 py-3 text-left font-semibold text-slate-700"
+                    >
+                      Rubrica
+                    </th>
+                    <th
+                      class="px-4 py-3 text-right font-semibold text-slate-700"
+                    >
+                      Valor
+                    </th>
+                  </tr>
+                </thead>
+                <tbody
+                  class="divide-y divide-slate-100 bg-white"
+                  id="breakdown-body"
+                ></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel p-6">
+            <div class="mb-5 flex items-center justify-between">
+              <div>
+                <h2 class="text-2xl font-semibold text-slate-900">
+                  Historico recente
+                </h2>
+                <p class="mt-1 text-sm text-slate-600">
+                  Ultimas simulacoes persistidas no banco local.
+                </p>
+              </div>
+            </div>
+            <div class="space-y-3" id="history-list"></div>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script src="./js/neutralino.js"></script>
+    <script src="./vendor/sql-wasm.js"></script>
+    <script src="./vendor/xlsx.full.min.js"></script>
+    <script type="module" src="./js/main.js"></script>
+  </body>
+</html>

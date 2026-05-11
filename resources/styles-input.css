@@ -1,0 +1,67 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-display: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+  --font-body: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+  --color-ink: #14213d;
+  --color-sand: #f8f5ef;
+  --color-gold: #fca311;
+  --color-slate: #dde5f0;
+  --color-success: #1f7a5c;
+  --color-danger: #b42318;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-body);
+    background:
+      radial-gradient(
+        circle at top left,
+        rgba(252, 163, 17, 0.22),
+        transparent 28%
+      ),
+      radial-gradient(
+        circle at top right,
+        rgba(20, 33, 61, 0.12),
+        transparent 20%
+      ),
+      linear-gradient(180deg, #f8f5ef 0%, #edf2f7 100%);
+    color: #14213d;
+  }
+
+  body {
+    min-height: 100vh;
+  }
+
+  input,
+  select,
+  textarea {
+    @apply w-full rounded-2xl border border-slate-300/90 bg-white/90 px-4 py-3 text-sm shadow-sm outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100;
+  }
+
+  label {
+    @apply text-sm font-semibold text-slate-700;
+  }
+}
+
+@layer components {
+  .panel {
+    @apply rounded-[28px] border border-white/60 bg-white/85 shadow-[0_18px_60px_rgba(20,33,61,0.08)] backdrop-blur;
+  }
+
+  .metric-card {
+    @apply rounded-3xl border border-slate-200/80 bg-slate-50/80 p-5 shadow-sm;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-2xl bg-amber-400 px-4 py-3 text-sm font-semibold text-slate-950 shadow-[0_12px_28px_rgba(252,163,17,0.28)] transition hover:bg-amber-300;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50;
+  }
+
+  .chip {
+    @apply rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em];
+  }
+}
