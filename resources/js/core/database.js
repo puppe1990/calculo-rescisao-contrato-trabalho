@@ -64,12 +64,7 @@ export class RescissionDatabase {
     `);
 
     statement.bind([limit]);
-    const rows = [];
-    while (statement.step()) {
-      rows.push(statement.getAsObject());
-    }
-    statement.free();
-    return rows;
+    return collectRows(statement);
   }
 
   getCalculation(id) {
@@ -77,23 +72,49 @@ export class RescissionDatabase {
       SELECT * FROM calculations WHERE id = ?
     `);
     statement.bind([id]);
-    const row = statement.step() ? statement.getAsObject() : null;
-    statement.free();
+    const row = readSingleRow(statement);
 
     if (!row) {
       return null;
     }
 
-    return {
-      ...row,
-      payload: JSON.parse(row.payload_json),
-      result: JSON.parse(row.result_json),
-    };
+    return parseCalculationRow(row);
+  }
+
+  listCalculationExports() {
+    const statement = this.db.prepare(`
+      SELECT * FROM calculations
+      ORDER BY id DESC
+    `);
+    return collectRows(statement).map(parseCalculationRow);
   }
 
   exportBinary() {
     return this.db.export();
   }
+}
+
+function collectRows(statement) {
+  const rows = [];
+  while (statement.step()) {
+    rows.push(statement.getAsObject());
+  }
+  statement.free();
+  return rows;
+}
+
+function readSingleRow(statement) {
+  const row = statement.step() ? statement.getAsObject() : null;
+  statement.free();
+  return row;
+}
+
+function parseCalculationRow(row) {
+  return {
+    ...row,
+    payload: JSON.parse(row.payload_json),
+    result: JSON.parse(row.result_json),
+  };
 }
 
 export async function createDatabase({ initSqlJs, persistedBinary = null }) {

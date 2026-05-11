@@ -2,13 +2,17 @@ import { calculateTermination, TERMINATION_TYPES } from './core/rescisao.js';
 import { formatCurrency } from './core/money.js';
 import { createDatabase } from './core/database.js';
 import { ensureAppStorageDirectory } from './core/app-storage.js';
-import { parseWorkbookRows } from './core/workbook.js';
+import {
+  buildCalculationsWorkbook,
+  parseWorkbookRows,
+} from './core/workbook.js';
 
 const DB_FILE_NAME = 'calculo-rescisao.sqlite';
 
 const form = document.querySelector('#rescission-form');
 const calculateButton = document.querySelector('#calculate-button');
 const importButton = document.querySelector('#import-button');
+const exportButton = document.querySelector('#export-button');
 const historyList = document.querySelector('#history-list');
 const historyCount = document.querySelector('#history-count');
 const grossTotal = document.querySelector('#gross-total');
@@ -167,6 +171,51 @@ async function importWorkbook() {
   );
 }
 
+function buildExportFileName() {
+  const date = new Date().toISOString().slice(0, 10);
+  return `historico-rescisoes-${date}.xlsx`;
+}
+
+async function saveWorkbookFile(workbook, targetPath) {
+  const binary = window.XLSX.write(workbook, {
+    bookType: 'xlsx',
+    type: 'array',
+  });
+  await Neutralino.filesystem.writeBinaryFile(targetPath, binary);
+}
+
+async function exportWorkbook() {
+  const records = repository.listCalculationExports();
+  if (!records.length) {
+    await Neutralino.os.showMessageBox(
+      'Sem dados para exportar',
+      'Nao ha simulacoes salvas para gerar a planilha.',
+      'OK',
+      'WARNING',
+    );
+    return;
+  }
+
+  const targetPath = await Neutralino.os.showSaveDialog(
+    'Salvar planilha exportada',
+    {
+      defaultPath: buildExportFileName(),
+      filters: [{ name: 'Planilhas Excel', extensions: ['xlsx'] }],
+    },
+  );
+
+  if (!targetPath) {
+    return;
+  }
+
+  const workbook = buildCalculationsWorkbook(records);
+  await saveWorkbookFile(workbook, targetPath);
+  await Neutralino.os.showNotification(
+    'Exportacao concluida',
+    `${records.length} simulacao(oes) exportada(s).`,
+  );
+}
+
 async function buildRepository() {
   const appDataPath = await Neutralino.os.getPath('data');
   const appDir = await ensureAppStorageDirectory({
@@ -183,7 +232,7 @@ async function buildRepository() {
   }
 
   const initSqlJs = window.initSqlJs({
-    locateFile: (file) => `./vendor/${file}`,
+    locateFile: (file) => `/vendor/${file}`,
   });
 
   repository = await createDatabase({
@@ -212,6 +261,19 @@ function registerEvents() {
     } catch (error) {
       await Neutralino.os.showMessageBox(
         'Erro na importacao',
+        error.message,
+        'OK',
+        'ERROR',
+      );
+    }
+  });
+
+  exportButton.addEventListener('click', async () => {
+    try {
+      await exportWorkbook();
+    } catch (error) {
+      await Neutralino.os.showMessageBox(
+        'Erro na exportacao',
         error.message,
         'OK',
         'ERROR',

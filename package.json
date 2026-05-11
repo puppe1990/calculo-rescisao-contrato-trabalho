@@ -13,7 +13,7 @@
     "precommit": "npm run check",
     "test": "vitest run",
     "test:watch": "vitest",
-    "dev": "npm run prepare:assets && npm run build:css && ./node_modules/.bin/neu run",
+    "dev": "npm run prepare:assets && npm run build:css && LANG=pt_BR.UTF-8 LC_ALL=pt_BR.UTF-8 ./node_modules/.bin/neu run --disable-auto-reload",
     "build": "npm run prepare:assets && npm run build:css && ./node_modules/.bin/neu build"
   },
   "keywords": [],

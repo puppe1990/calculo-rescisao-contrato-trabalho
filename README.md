@@ -28,6 +28,7 @@ npm run build
 - Persistencia local em arquivo `calculo-rescisao.sqlite`
 - Historico recente de simulacoes
 - Importacao de planilhas `.xlsx` e `.xls`
+- Exportacao do historico em planilha `.xlsx`
 - Regras-base para:
   - saldo de salario
   - 13o proporcional

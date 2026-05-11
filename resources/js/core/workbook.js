@@ -27,6 +27,27 @@ const HEADER_ALIASES = {
   notes: ['observacoes', 'obs', 'notes'],
 };
 
+const EXPORT_HEADERS = {
+  employeeName: 'Nome do colaborador',
+  admissionDate: 'Data de admissao',
+  terminationDate: 'Data de desligamento',
+  terminationType: 'Tipo de rescisao',
+  noticeMode: 'Aviso previo',
+  source: 'Origem',
+  salary: 'Salario bruto mensal',
+  fgtsBalance: 'Saldo FGTS acumulado',
+  otherDiscounts: 'Outros descontos',
+  vacationDaysDue: 'Dias de ferias vencidas',
+  noticeDays: 'Dias de aviso previo',
+  proportional13Months: 'Meses 13o proporcional',
+  proportionalVacationMonths: 'Meses ferias proporcionais',
+  grossTotal: 'Total de proventos',
+  discountTotal: 'Total de descontos',
+  netTotal: 'Liquido estimado',
+  notes: 'Observacoes',
+  createdAt: 'Criado em',
+};
+
 function normalizeHeader(value) {
   return String(value ?? '')
     .normalize('NFD')
@@ -48,9 +69,42 @@ function mapHeaders(headers) {
   return mapped;
 }
 
-export function parseWorkbookRows(workbook) {
+function getFirstWorksheet(workbook) {
   const sheetName = workbook.SheetNames[0];
-  const worksheet = workbook.Sheets[sheetName];
+  return workbook.Sheets[sheetName];
+}
+
+function parseNumericValue(value) {
+  return Number(value || 0);
+}
+
+function buildExportRow(record) {
+  return {
+    [EXPORT_HEADERS.employeeName]: record.payload.employeeName,
+    [EXPORT_HEADERS.admissionDate]: record.payload.admissionDate,
+    [EXPORT_HEADERS.terminationDate]: record.payload.terminationDate,
+    [EXPORT_HEADERS.terminationType]: record.payload.terminationType,
+    [EXPORT_HEADERS.noticeMode]: record.payload.noticeMode,
+    [EXPORT_HEADERS.source]: record.source,
+    [EXPORT_HEADERS.salary]: record.payload.salary,
+    [EXPORT_HEADERS.fgtsBalance]: record.payload.fgtsBalance,
+    [EXPORT_HEADERS.otherDiscounts]: record.payload.otherDiscounts,
+    [EXPORT_HEADERS.vacationDaysDue]: record.payload.vacationDaysDue,
+    [EXPORT_HEADERS.noticeDays]: record.result.metrics.noticeDays,
+    [EXPORT_HEADERS.proportional13Months]:
+      record.result.metrics.proportional13Months,
+    [EXPORT_HEADERS.proportionalVacationMonths]:
+      record.result.metrics.proportionalVacationMonths,
+    [EXPORT_HEADERS.grossTotal]: record.result.metrics.grossTotal,
+    [EXPORT_HEADERS.discountTotal]: record.result.metrics.discountTotal,
+    [EXPORT_HEADERS.netTotal]: record.result.metrics.netTotal,
+    [EXPORT_HEADERS.notes]: record.payload.notes,
+    [EXPORT_HEADERS.createdAt]: record.created_at,
+  };
+}
+
+export function parseWorkbookRows(workbook) {
+  const worksheet = getFirstWorksheet(workbook);
   const rows = window.XLSX.utils.sheet_to_json(worksheet, { defval: '' });
   if (!rows.length) {
     return [];
@@ -60,16 +114,24 @@ export function parseWorkbookRows(workbook) {
 
   return rows.map((row) => ({
     employeeName: row[headerMap.employeeName] || '',
-    salary: Number(row[headerMap.salary] || 0),
+    salary: parseNumericValue(row[headerMap.salary]),
     admissionDate: String(row[headerMap.admissionDate] || ''),
     terminationDate: String(row[headerMap.terminationDate] || ''),
     terminationType: String(
       row[headerMap.terminationType] || 'SEM_JUSTA_CAUSA',
     ),
     noticeMode: String(row[headerMap.noticeMode] || 'INDENIZADO'),
-    vacationDaysDue: Number(row[headerMap.vacationDaysDue] || 0),
-    fgtsBalance: Number(row[headerMap.fgtsBalance] || 0),
-    otherDiscounts: Number(row[headerMap.otherDiscounts] || 0),
+    vacationDaysDue: parseNumericValue(row[headerMap.vacationDaysDue]),
+    fgtsBalance: parseNumericValue(row[headerMap.fgtsBalance]),
+    otherDiscounts: parseNumericValue(row[headerMap.otherDiscounts]),
     notes: String(row[headerMap.notes] || ''),
   }));
+}
+
+export function buildCalculationsWorkbook(records) {
+  const rows = records.map(buildExportRow);
+  const worksheet = window.XLSX.utils.json_to_sheet(rows);
+  const workbook = window.XLSX.utils.book_new();
+  window.XLSX.utils.book_append_sheet(workbook, worksheet, 'Historico');
+  return workbook;
 }
