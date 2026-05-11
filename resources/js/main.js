@@ -290,9 +290,6 @@ function registerEvents() {
     await loadHistoryRecord(target.dataset.historyId);
   });
 
-  Neutralino.events.on('windowClose', () => {
-    Neutralino.app.exit();
-  });
 }
 
 async function bootstrap() {

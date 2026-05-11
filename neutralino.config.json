@@ -30,7 +30,7 @@
       "maximize": true,
       "hidden": false,
       "resizable": true,
-      "exitProcessOnClose": false
+      "exitProcessOnClose": true
     },
     "browser": {
       "nativeBlockList": ["filesystem.*"]
