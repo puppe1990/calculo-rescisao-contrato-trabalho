@@ -2,13 +2,17 @@ import { calculateTermination, TERMINATION_TYPES } from './core/rescisao.js';
 import { formatCurrency } from './core/money.js';
 import { createDatabase } from './core/database.js';
 import { ensureAppStorageDirectory } from './core/app-storage.js';
-import { parseWorkbookRows } from './core/workbook.js';
+import {
+  buildCalculationsWorkbook,
+  parseWorkbookRows,
+} from './core/workbook.js';
 
 const DB_FILE_NAME = 'calculo-rescisao.sqlite';
 
 const form = document.querySelector('#rescission-form');
 const calculateButton = document.querySelector('#calculate-button');
 const importButton = document.querySelector('#import-button');
+const exportButton = document.querySelector('#export-button');
 const historyList = document.querySelector('#history-list');
 const historyCount = document.querySelector('#history-count');
 const grossTotal = document.querySelector('#gross-total');
@@ -71,12 +75,12 @@ function renderSummary(result) {
 }
 
 function renderHistory(records) {
-  historyCount.textContent = `${records.length} simulacoes`;
+  historyCount.textContent = `${records.length} simulações`;
 
   if (!records.length) {
     historyList.innerHTML = `
       <div class="rounded-3xl border border-dashed border-slate-300 p-6 text-sm text-slate-500">
-        Nenhuma simulacao salva ainda.
+        Nenhuma simulação salva ainda.
       </div>
     `;
     return;
@@ -162,8 +166,53 @@ async function importWorkbook() {
   await persistDatabase();
   await refreshHistory();
   await Neutralino.os.showNotification(
-    'Importacao concluida',
+    'Importação concluída',
     `${rows.length} linha(s) processadas.`,
+  );
+}
+
+function buildExportFileName() {
+  const date = new Date().toISOString().slice(0, 10);
+  return `historico-rescisoes-${date}.xlsx`;
+}
+
+async function saveWorkbookFile(workbook, targetPath) {
+  const binary = window.XLSX.write(workbook, {
+    bookType: 'xlsx',
+    type: 'array',
+  });
+  await Neutralino.filesystem.writeBinaryFile(targetPath, binary);
+}
+
+async function exportWorkbook() {
+  const records = repository.listCalculationExports();
+  if (!records.length) {
+    await Neutralino.os.showMessageBox(
+      'Sem dados para exportar',
+      'Não há simulações salvas para gerar a planilha.',
+      'OK',
+      'WARNING',
+    );
+    return;
+  }
+
+  const targetPath = await Neutralino.os.showSaveDialog(
+    'Salvar planilha exportada',
+    {
+      defaultPath: buildExportFileName(),
+      filters: [{ name: 'Planilhas Excel', extensions: ['xlsx'] }],
+    },
+  );
+
+  if (!targetPath) {
+    return;
+  }
+
+  const workbook = buildCalculationsWorkbook(records);
+  await saveWorkbookFile(workbook, targetPath);
+  await Neutralino.os.showNotification(
+    'Exportação concluída',
+    `${records.length} simulação(ões) exportada(s).`,
   );
 }
 
@@ -183,7 +232,7 @@ async function buildRepository() {
   }
 
   const initSqlJs = window.initSqlJs({
-    locateFile: (file) => `./vendor/${file}`,
+    locateFile: (file) => `/vendor/${file}`,
   });
 
   repository = await createDatabase({
@@ -198,7 +247,7 @@ function registerEvents() {
       await handleCalculation();
     } catch (error) {
       await Neutralino.os.showMessageBox(
-        'Erro no calculo',
+        'Erro no cálculo',
         error.message,
         'OK',
         'ERROR',
@@ -211,7 +260,20 @@ function registerEvents() {
       await importWorkbook();
     } catch (error) {
       await Neutralino.os.showMessageBox(
-        'Erro na importacao',
+        'Erro na importação',
+        error.message,
+        'OK',
+        'ERROR',
+      );
+    }
+  });
+
+  exportButton.addEventListener('click', async () => {
+    try {
+      await exportWorkbook();
+    } catch (error) {
+      await Neutralino.os.showMessageBox(
+        'Erro na exportação',
         error.message,
         'OK',
         'ERROR',
@@ -226,10 +288,6 @@ function registerEvents() {
     }
 
     await loadHistoryRecord(target.dataset.historyId);
-  });
-
-  Neutralino.events.on('windowClose', () => {
-    Neutralino.app.exit();
   });
 }
 
