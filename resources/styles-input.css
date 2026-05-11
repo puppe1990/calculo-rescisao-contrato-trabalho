@@ -33,6 +33,12 @@
     min-height: 100vh;
   }
 
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+
   input,
   select,
   textarea {
@@ -45,6 +51,15 @@
 }
 
 @layer components {
+  .app-body {
+    overflow: hidden;
+  }
+
+  .app-shell {
+    height: 100vh;
+    overflow: hidden;
+  }
+
   .panel {
     @apply rounded-[28px] border border-white/60 bg-white/85 shadow-[0_18px_60px_rgba(20,33,61,0.08)] backdrop-blur;
   }

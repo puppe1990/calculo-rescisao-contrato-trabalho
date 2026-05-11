@@ -12,9 +12,9 @@
     />
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body class="selection:bg-amber-200">
+  <body class="app-body selection:bg-amber-200">
     <main
-      class="mx-auto flex min-h-screen max-w-[1600px] flex-col gap-6 px-6 py-6"
+      class="app-shell mx-auto flex max-w-[1600px] flex-col gap-6 px-6 py-6"
     >
       <section class="panel overflow-hidden">
         <div
@@ -56,9 +56,9 @@
       </section>
 
       <section
-        class="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(420px,0.85fr)]"
+        class="grid min-h-0 flex-1 gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(420px,0.85fr)]"
       >
-        <section class="panel p-6">
+        <section class="panel flex min-h-0 flex-col p-6">
           <div class="mb-6 flex items-start justify-between gap-4">
             <div>
               <h2 class="text-2xl font-semibold text-slate-900">
@@ -79,117 +79,120 @@
             </div>
           </div>
 
-          <form class="grid gap-5 md:grid-cols-2" id="rescission-form">
-            <div class="md:col-span-2">
-              <label for="employeeName">Nome do colaborador</label>
-              <input
-                id="employeeName"
-                name="employeeName"
-                placeholder="Ex.: Maria de Souza"
-                required
-              />
-            </div>
-            <div>
-              <label for="salary">Salario bruto mensal</label>
-              <input
-                id="salary"
-                name="salary"
-                type="number"
-                min="0"
-                step="0.01"
-                value="3500"
-                required
-              />
-            </div>
-            <div>
-              <label for="fgtsBalance">Saldo FGTS acumulado</label>
-              <input
-                id="fgtsBalance"
-                name="fgtsBalance"
-                type="number"
-                min="0"
-                step="0.01"
-                value="0"
-              />
-            </div>
-            <div>
-              <label for="admissionDate">Data de admissao</label>
-              <input
-                id="admissionDate"
-                name="admissionDate"
-                type="date"
-                required
-              />
-            </div>
-            <div>
-              <label for="terminationDate">Data de desligamento</label>
-              <input
-                id="terminationDate"
-                name="terminationDate"
-                type="date"
-                required
-              />
-            </div>
-            <div>
-              <label for="terminationType">Tipo de rescisao</label>
-              <select id="terminationType" name="terminationType">
-                <option value="SEM_JUSTA_CAUSA">Sem justa causa</option>
-                <option value="PEDIDO_DEMISSAO">Pedido de demissao</option>
-                <option value="TERMINO_CONTRATO">Termino de contrato</option>
-              </select>
-            </div>
-            <div>
-              <label for="noticeMode">Aviso previo</label>
-              <select id="noticeMode" name="noticeMode">
-                <option value="INDENIZADO">Indenizado</option>
-                <option value="TRABALHADO">Trabalhado</option>
-                <option value="NAO_APLICAVEL">Nao aplicavel</option>
-              </select>
-            </div>
-            <div>
-              <label for="vacationDaysDue">Dias de ferias vencidas</label>
-              <input
-                id="vacationDaysDue"
-                name="vacationDaysDue"
-                type="number"
-                min="0"
-                max="30"
-                value="0"
-              />
-            </div>
-            <div>
-              <label for="otherDiscounts">Outros descontos</label>
-              <input
-                id="otherDiscounts"
-                name="otherDiscounts"
-                type="number"
-                min="0"
-                step="0.01"
-                value="0"
-              />
-            </div>
-            <div class="md:col-span-2">
-              <label for="notes">Observacoes</label>
-              <textarea
-                id="notes"
-                name="notes"
-                rows="3"
-                placeholder="Informacoes adicionais da rescisao"
-              ></textarea>
-            </div>
-          </form>
+          <div class="min-h-0 flex-1 overflow-y-auto pr-1">
+            <form class="grid gap-5 md:grid-cols-2" id="rescission-form">
+              <div class="md:col-span-2">
+                <label for="employeeName">Nome do colaborador</label>
+                <input
+                  id="employeeName"
+                  name="employeeName"
+                  placeholder="Ex.: Maria de Souza"
+                  required
+                />
+              </div>
+              <div>
+                <label for="salary">Salario bruto mensal</label>
+                <input
+                  id="salary"
+                  name="salary"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value="3500"
+                  required
+                />
+              </div>
+              <div>
+                <label for="fgtsBalance">Saldo FGTS acumulado</label>
+                <input
+                  id="fgtsBalance"
+                  name="fgtsBalance"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value="0"
+                />
+              </div>
+              <div>
+                <label for="admissionDate">Data de admissao</label>
+                <input
+                  id="admissionDate"
+                  name="admissionDate"
+                  type="date"
+                  required
+                />
+              </div>
+              <div>
+                <label for="terminationDate">Data de desligamento</label>
+                <input
+                  id="terminationDate"
+                  name="terminationDate"
+                  type="date"
+                  required
+                />
+              </div>
+              <div>
+                <label for="terminationType">Tipo de rescisao</label>
+                <select id="terminationType" name="terminationType">
+                  <option value="SEM_JUSTA_CAUSA">Sem justa causa</option>
+                  <option value="PEDIDO_DEMISSAO">Pedido de demissao</option>
+                  <option value="TERMINO_CONTRATO">Termino de contrato</option>
+                </select>
+              </div>
+              <div>
+                <label for="noticeMode">Aviso previo</label>
+                <select id="noticeMode" name="noticeMode">
+                  <option value="INDENIZADO">Indenizado</option>
+                  <option value="TRABALHADO">Trabalhado</option>
+                  <option value="NAO_APLICAVEL">Nao aplicavel</option>
+                </select>
+              </div>
+              <div>
+                <label for="vacationDaysDue">Dias de ferias vencidas</label>
+                <input
+                  id="vacationDaysDue"
+                  name="vacationDaysDue"
+                  type="number"
+                  min="0"
+                  max="30"
+                  value="0"
+                />
+              </div>
+              <div>
+                <label for="otherDiscounts">Outros descontos</label>
+                <input
+                  id="otherDiscounts"
+                  name="otherDiscounts"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value="0"
+                />
+              </div>
+              <div class="md:col-span-2">
+                <label for="notes">Observacoes</label>
+                <textarea
+                  id="notes"
+                  name="notes"
+                  rows="3"
+                  placeholder="Informacoes adicionais da rescisao"
+                ></textarea>
+              </div>
+            </form>
 
-          <div
-            class="mt-6 rounded-3xl border border-amber-200 bg-amber-50/80 p-4 text-sm text-amber-950"
-          >
-            As regras desta primeira versao cobrem o calculo-base da rescisao e
-            usam referencia de teto do INSS de 2026. Impostos detalhados,
-            convencoes coletivas e excecoes juridicas ainda precisam ser
-            refinados com a planilha real e validacao trabalhista.
+            <div
+              class="mt-6 rounded-3xl border border-amber-200 bg-amber-50/80 p-4 text-sm text-amber-950"
+            >
+              As regras desta primeira versao cobrem o calculo-base da
+              rescisao e usam referencia de teto do INSS de 2026. Impostos
+              detalhados, convencoes coletivas e excecoes juridicas ainda
+              precisam ser refinados com a planilha real e validacao
+              trabalhista.
+            </div>
           </div>
         </section>
 
-        <section class="grid gap-6">
+        <section class="grid min-h-0 gap-6">
           <section class="panel p-6">
             <div class="mb-5 flex items-center justify-between">
               <div>
@@ -266,7 +269,7 @@
             </div>
           </section>
 
-          <section class="panel p-6">
+          <section class="panel flex min-h-0 flex-col p-6">
             <div class="mb-5 flex items-center justify-between">
               <div>
                 <h2 class="text-2xl font-semibold text-slate-900">
@@ -277,7 +280,7 @@
                 </p>
               </div>
             </div>
-            <div class="space-y-3" id="history-list"></div>
+            <div class="min-h-0 flex-1 space-y-3 overflow-y-auto pr-1" id="history-list"></div>
           </section>
         </section>
       </section>
