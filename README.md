@@ -1,6 +1,6 @@
-# Calculo de Rescisao
+# Cálculo de Rescisão
 
-Sistema desktop para simulacao e historico de calculos de rescisao usando:
+Sistema desktop para simulação e histórico de cálculos de rescisão usando:
 
 - NeutralinoJS
 - HTML + Tailwind CSS
@@ -24,22 +24,22 @@ npm run build
 
 ## Escopo atual
 
-- Simulacao manual de rescisao
-- Persistencia local em arquivo `calculo-rescisao.sqlite`
-- Historico recente de simulacoes
-- Importacao de planilhas `.xlsx` e `.xls`
-- Exportacao do historico em planilha `.xlsx`
+- Simulação manual de rescisão
+- Persistência local em arquivo `calculo-rescisao.sqlite`
+- Histórico recente de simulações
+- Importação de planilhas `.xlsx` e `.xls`
+- Exportação do histórico em planilha `.xlsx`
 - Regras-base para:
-  - saldo de salario
-  - 13o proporcional
-  - ferias proporcionais e vencidas com 1/3
-  - aviso previo
-  - deposito de FGTS sobre base rescisoria
+  - saldo de salário
+  - 13º proporcional
+  - férias proporcionais e vencidas com 1/3
+  - aviso prévio
+  - depósito de FGTS sobre base rescisória
   - multa de 40% do FGTS para sem justa causa
 
-## Observacao importante
+## Observação importante
 
-Esta versao e um MVP tecnico. Sem a planilha real do Mercado Livre e sem revisao trabalhista,
-o sistema nao deve ser tratado como calculadora juridica definitiva. A proxima etapa correta e
-mapear as colunas e formulas do Excel original, comparar caso a caso e ajustar regras,
-convencoes coletivas, descontos legais e excecoes.
+Esta versão é um MVP técnico. Sem a planilha real do Mercado Livre e sem revisão trabalhista,
+o sistema não deve ser tratado como calculadora jurídica definitiva. A próxima etapa correta é
+mapear as colunas e fórmulas do Excel original, comparar caso a caso e ajustar regras,
+convenções coletivas, descontos legais e exceções.

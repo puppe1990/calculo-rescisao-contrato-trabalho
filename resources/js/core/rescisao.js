@@ -8,25 +8,25 @@ import { roundCurrency } from './money.js';
 
 export const TERMINATION_TYPES = {
   SEM_JUSTA_CAUSA: 'Sem justa causa',
-  PEDIDO_DEMISSAO: 'Pedido de demissao',
-  TERMINO_CONTRATO: 'Termino de contrato',
+  PEDIDO_DEMISSAO: 'Pedido de demissão',
+  TERMINO_CONTRATO: 'Término de contrato',
 };
 
 function validateInput(input) {
   if (!input.employeeName?.trim()) {
-    throw new Error('Nome do colaborador e obrigatorio.');
+    throw new Error('Nome do colaborador é obrigatório.');
   }
 
   if (!input.admissionDate || !input.terminationDate) {
-    throw new Error('Datas de admissao e desligamento sao obrigatorias.');
+    throw new Error('Datas de admissão e desligamento são obrigatórias.');
   }
 
   if (Number(input.salary) <= 0) {
-    throw new Error('Salario bruto deve ser maior que zero.');
+    throw new Error('Salário bruto deve ser maior que zero.');
   }
 
   if (parseISODate(input.terminationDate) < parseISODate(input.admissionDate)) {
-    throw new Error('Data de desligamento nao pode ser anterior a admissao.');
+    throw new Error('Data de desligamento não pode ser anterior à admissão.');
   }
 }
 
@@ -101,19 +101,19 @@ export function calculateTermination(input) {
       : 0;
 
   const earnings = [
-    ['Saldo de salario', salaryBalance],
-    ['13o proporcional', thirteenthProportional],
-    ['Ferias proporcionais', proportionalVacation],
-    ['1/3 ferias proporcionais', vacationBonus],
-    ['Ferias vencidas', dueVacation],
-    ['1/3 ferias vencidas', dueVacationBonus],
-    ['Aviso previo indenizado', noticePay],
-    ['Deposito FGTS rescisorio', fgtsDeposit],
+    ['Saldo de salário', salaryBalance],
+    ['13º proporcional', thirteenthProportional],
+    ['Férias proporcionais', proportionalVacation],
+    ['1/3 férias proporcionais', vacationBonus],
+    ['Férias vencidas', dueVacation],
+    ['1/3 férias vencidas', dueVacationBonus],
+    ['Aviso prévio indenizado', noticePay],
+    ['Depósito FGTS rescisório', fgtsDeposit],
     ['Multa de 40% FGTS', fgtsPenalty],
   ].filter(([, value]) => value > 0);
 
   const discounts = [
-    ['Desconto de aviso previo', noticeDiscount],
+    ['Desconto de aviso prévio', noticeDiscount],
     ['Outros descontos', roundCurrency(otherDiscounts)],
   ].filter(([, value]) => value > 0);
 

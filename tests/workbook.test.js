@@ -84,8 +84,8 @@ describe('buildCalculationsWorkbook', () => {
     expect(jsonToSheet).toHaveBeenCalledWith([
       expect.objectContaining({
         'Nome do colaborador': 'Ana Lima',
-        'Tipo de rescisao': 'SEM_JUSTA_CAUSA',
-        'Liquido estimado': 6800,
+        'Tipo de rescisão': 'SEM_JUSTA_CAUSA',
+        'Líquido estimado': 6800,
       }),
     ]);
     expect(bookAppendSheet).toHaveBeenCalledWith(

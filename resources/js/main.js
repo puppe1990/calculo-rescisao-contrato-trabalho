@@ -75,12 +75,12 @@ function renderSummary(result) {
 }
 
 function renderHistory(records) {
-  historyCount.textContent = `${records.length} simulacoes`;
+  historyCount.textContent = `${records.length} simulações`;
 
   if (!records.length) {
     historyList.innerHTML = `
       <div class="rounded-3xl border border-dashed border-slate-300 p-6 text-sm text-slate-500">
-        Nenhuma simulacao salva ainda.
+        Nenhuma simulação salva ainda.
       </div>
     `;
     return;
@@ -166,7 +166,7 @@ async function importWorkbook() {
   await persistDatabase();
   await refreshHistory();
   await Neutralino.os.showNotification(
-    'Importacao concluida',
+    'Importação concluída',
     `${rows.length} linha(s) processadas.`,
   );
 }
@@ -189,7 +189,7 @@ async function exportWorkbook() {
   if (!records.length) {
     await Neutralino.os.showMessageBox(
       'Sem dados para exportar',
-      'Nao ha simulacoes salvas para gerar a planilha.',
+      'Não há simulações salvas para gerar a planilha.',
       'OK',
       'WARNING',
     );
@@ -211,8 +211,8 @@ async function exportWorkbook() {
   const workbook = buildCalculationsWorkbook(records);
   await saveWorkbookFile(workbook, targetPath);
   await Neutralino.os.showNotification(
-    'Exportacao concluida',
-    `${records.length} simulacao(oes) exportada(s).`,
+    'Exportação concluída',
+    `${records.length} simulação(ões) exportada(s).`,
   );
 }
 
@@ -247,7 +247,7 @@ function registerEvents() {
       await handleCalculation();
     } catch (error) {
       await Neutralino.os.showMessageBox(
-        'Erro no calculo',
+        'Erro no cálculo',
         error.message,
         'OK',
         'ERROR',
@@ -260,7 +260,7 @@ function registerEvents() {
       await importWorkbook();
     } catch (error) {
       await Neutralino.os.showMessageBox(
-        'Erro na importacao',
+        'Erro na importação',
         error.message,
         'OK',
         'ERROR',
@@ -273,7 +273,7 @@ function registerEvents() {
       await exportWorkbook();
     } catch (error) {
       await Neutralino.os.showMessageBox(
-        'Erro na exportacao',
+        'Erro na exportação',
         error.message,
         'OK',
         'ERROR',

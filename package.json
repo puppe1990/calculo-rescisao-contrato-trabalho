@@ -1,7 +1,7 @@
 {
   "name": "calculo-rescisao-contrato-trabalho",
   "version": "1.0.0",
-  "description": "Sistema desktop de calculo de rescisao com NeutralinoJS, Tailwind, JS e SQLite.",
+  "description": "Sistema desktop de cálculo de rescisão com NeutralinoJS, Tailwind, JS e SQLite.",
   "scripts": {
     "prepare": "node ./scripts/install-pre-commit.mjs",
     "prepare:assets": "node ./scripts/sync-vendor.mjs",
